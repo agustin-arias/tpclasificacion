@@ -2,15 +2,20 @@
 title: "TP Clasificación Estadística"
 author: "Camilo D'Aloisio"
 date: "2022-12-08"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 Cargamos los datos y modificamos las variables RainTomorrow y RainToday para que queden como categóricas y con las opciones 1 (si llovió) y 0 (si no llovió). Las otras variables son numéricas.
 
 
 
-```{r}
-setwd("C:\\Users\\camil\\OneDrive\\Desktop\\2DO 2022\\ESTADÍSTICA")
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
+options(warn=-1)
+current_directory <- getwd()
+setwd(current_directory)
 datos <- read.csv("lluviaAus.csv")
 datos$RainTomorrow <-  ifelse(datos$RainTomorrow=="Yes", 1, 0)
 datos$RainTomorrow <- as.factor(datos$RainTomorrow)
