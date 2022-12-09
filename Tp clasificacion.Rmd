@@ -2,9 +2,7 @@
 title: "TP Clasificación Estadística"
 author: "Camilo D'Aloisio"
 date: "2022-12-08"
-output:
-  pdf_document: default
-  html_document: default
+output: pdf_document: default
 ---
 
 Cargamos los datos y modificamos las variables RainTomorrow y RainToday para que queden como categóricas y con las opciones 1 (si llovió) y 0 (si no llovió). Las otras variables son numéricas.
