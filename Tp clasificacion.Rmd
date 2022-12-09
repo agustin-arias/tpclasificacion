@@ -12,11 +12,17 @@ Cargamos los datos y modificamos las variables RainTomorrow y RainToday para que
 
 
 ```{r setup, include=FALSE}
+#disable warnings 
 knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
 options(warn=-1)
+```
+
+```{r}
 current_directory <- getwd()
 setwd(current_directory)
+
 datos <- read.csv("lluviaAus.csv")
+
 datos$RainTomorrow <-  ifelse(datos$RainTomorrow=="Yes", 1, 0)
 datos$RainTomorrow <- as.factor(datos$RainTomorrow)
 datos$RainToday <-  ifelse(datos$RainToday=="Yes", 1, 0)
@@ -30,7 +36,7 @@ datos$RainToday <- as.factor(datos$RainToday)
 library(ggplot2)
 library(GGally)
 
-ggpairs(datos)
+#ggpairs(datos)
 ggpairs(datos, upper = "blank")
 
 #como usamos la funcion con tantas variables?
@@ -42,8 +48,6 @@ Las varaibles temperatura maxima, temperatura minima y temperatura a las 3 de la
 # Ejercicio 2
 
 ```{r}
-library(ggplot2)
-
 datos %>% ggplot(mapping=aes(x=Sunshine, y=Humidity3pm, color=RainTomorrow)) + 
   geom_point() +
   labs(x="Luz solar", y="Humedad a las 3 p.m.")
@@ -51,14 +55,26 @@ datos %>% ggplot(mapping=aes(x=Sunshine, y=Humidity3pm, color=RainTomorrow)) +
 # Ejercicio 3
 
 ```{r}
-boxplot(datos$Sunshine[datos$RainTomorrow==0], datos$Sunshine[datos$RainTomorrow==1], xlab=c(0, 1))
+boxplot(
+  datos$Sunshine[datos$RainTomorrow==0],
+  datos$Sunshine[datos$RainTomorrow==1],
+  names=c("No", "Yes"),
+  xlab="RainTomorrow",
+  ylab="Sunshine"
+)
 
 ```
 
 Observamos que, en lineas generales, cuando no llueve hay más luz solar que cuando llueve ya que todos los cuantiles son mayores. Sin embargo, el bigote inferior se encuentra al mismo nivel (en 0) por lo que puede haber días que no llueva donde haya poca luz solar.
 
 ```{r}
-boxplot(datos$Humidity3pm[datos$RainTomorrow==0], datos$Humidity3pm[datos$RainTomorrow==1], xlab=c(0, 1))
+boxplot(
+  datos$Humidity3pm[datos$RainTomorrow==0],
+  datos$Humidity3pm[datos$RainTomorrow==1],
+  names=c("No", "Yes"),
+  xlab="RainTomorrow",
+  ylab="Humidity3pm"
+)
 
 ```
 Acá, al contrario, observamos que los días que llueve suele haber más humedad a las 3 de la tarde que los días que no llueve.
@@ -67,6 +83,7 @@ Acá, al contrario, observamos que los días que llueve suele haber más humedad
 
 ```{r}
 clasificador.movil <-  function(datos, etiquetas, h, x0) {
+  #etiquetas_en_ventana <-  etiquetas[norm(datos - x0, type="2") <= h]
   etiquetas_en_ventana <-  etiquetas[abs(datos - x0) <= h]
   res <- ifelse(sum(etiquetas_en_ventana==1) / length(etiquetas_en_ventana) >= 0.5, 1, 0)
   return(res)
@@ -80,7 +97,12 @@ clasificador.movil2 <- function(datos, etiquetas, h, x0) {
   return(res)
 }
 
-
+# Nota: 
+# podemos reemplazar todo por una sola funcion haciendo:
+# etiquetas_en_ventana <-  etiquetas[norm(datos - x0, type="2") <= h]
+# ejemplo: 
+# norm(-2, type="2") -> 2 
+# norm(c(3,4), type="2") -> 5 
 ```
 
 
